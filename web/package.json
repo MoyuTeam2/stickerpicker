@@ -6,14 +6,34 @@
   "author": "Tulir Asokan <tulir@maunium.net>",
   "license": "AGPL-3.0-or-later",
   "private": true,
+  "targets": {
+    "default": {
+      "engines": {
+        "browsers": "last 5 Chrome versions"
+      }
+    }
+  },
   "scripts": {
-    "esinstall": "node ./esinstall.js",
-    "sass": "sass --no-source-map --style=compressed style/"
+    "clean": "rimraf dist/",
+    "dev": "parcel serve index.html",
+    "build": "parcel build index.html --public-url ./ --dist-dir ./dist --no-source-maps"
+  },
+  "staticFiles": {
+    "staticPath": "packs/",
+    "staticOutPath": "packs"
   },
   "dependencies": {
-    "htm": "^3.1.0",
-    "preact": "^10.5.14",
     "esinstall": "^1.1.7",
+    "htm": "^3.1.0",
+    "preact": "^10.19.3",
     "sass": "^1.42.1"
+  },
+  "devDependencies": {
+    "@parcel/config-default": "^2.11.0",
+    "@parcel/transformer-sass": "2.11.0",
+    "parcel": "^2.11.0",
+    "parcel-reporter-static-files-copy": "^1.5.3",
+    "rimraf": "^5.0.5",
+    "wrangler": "^3.28.3"
   }
 }

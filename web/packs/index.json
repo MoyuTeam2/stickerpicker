@@ -1,0 +1,6 @@
+{
+  "packs": [
+    "genshin_kokomi_pack.json"
+  ],
+  "homeserver_url": "https://matrix.org"
+}

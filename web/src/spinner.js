@@ -13,7 +13,8 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-import { html } from "../lib/htm/preact.js"
+
+import { html } from "htm/preact";
 
 export const Spinner = ({ size = 40, noCenter = false, noMargin = false, green = false }) => {
 	let margin = 0
@@ -23,8 +24,8 @@ export const Spinner = ({ size = 40, noCenter = false, noMargin = false, green =
 		size = `${size}px`
 	}
 	const noInnerMargin = !noCenter || !margin
-	const comp = html`
-        <div style="width: ${size}; height: ${size}; margin: ${noInnerMargin ? 0 : margin} 0;"
+	const comp =
+		html`<div style="width: ${size}; height: ${size}; margin: ${noInnerMargin ? 0 : margin} 0;"
              class="sk-chase ${green && "green"}">
             <div class="sk-chase-dot" />
             <div class="sk-chase-dot" />
@@ -32,8 +33,7 @@ export const Spinner = ({ size = 40, noCenter = false, noMargin = false, green =
             <div class="sk-chase-dot" />
             <div class="sk-chase-dot" />
             <div class="sk-chase-dot" />
-        </div>
-    `
+        </div>`
 	if (!noCenter) {
 		return html`<div style="margin: ${margin} 0;" class="sk-center-wrapper">${comp}</div>`
 	}
