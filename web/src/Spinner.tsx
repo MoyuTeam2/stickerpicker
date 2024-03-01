@@ -14,28 +14,29 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import { html } from "htm/preact";
 
 export const Spinner = ({ size = 40, noCenter = false, noMargin = false, green = false }) => {
-	let margin = 0
-	if (!isNaN(+size)) {
-		size = +size
-		margin = noMargin ? 0 : `${Math.round(size / 6)}px`
-		size = `${size}px`
+	let margin = 0;
+	let sizePx = typeof size === 'number' ? size : parseInt(size, 10);
+
+	if (!isNaN(sizePx)) {
+		margin = noMargin ? 0 : Math.round(sizePx / 6);
+		sizePx = `${sizePx}px`;
 	}
-	const noInnerMargin = !noCenter || !margin
-	const comp =
-		html`<div style="width: ${size}; height: ${size}; margin: ${noInnerMargin ? 0 : margin} 0;"
-             class="sk-chase ${green && "green"}">
-            <div class="sk-chase-dot" />
-            <div class="sk-chase-dot" />
-            <div class="sk-chase-dot" />
-            <div class="sk-chase-dot" />
-            <div class="sk-chase-dot" />
-            <div class="sk-chase-dot" />
-        </div>`
+	const noInnerMargin = !noCenter || margin === 0;
+	const comp = (
+		<div style={{ width: sizePx, height: sizePx, margin: noInnerMargin ? 0 : `${margin}px 0` }}
+			className={`sk-chase ${green ? 'green' : ''}`}>
+			<div className="sk-chase-dot" />
+			<div className="sk-chase-dot" />
+			<div className="sk-chase-dot" />
+			<div className="sk-chase-dot" />
+			<div className="sk-chase-dot" />
+			<div className="sk-chase-dot" />
+		</div>
+	);
 	if (!noCenter) {
-		return html`<div style="margin: ${margin} 0;" class="sk-center-wrapper">${comp}</div>`
+		return <div style={{ margin: `${margin}px 0` }} className="sk-center-wrapper">{comp}</div>;
 	}
-	return comp
-}
+	return comp;
+};

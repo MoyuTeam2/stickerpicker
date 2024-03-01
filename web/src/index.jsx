@@ -13,11 +13,11 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import { render, Component } from "preact";
-import { html } from "htm/preact";
-import { Spinner } from "./spinner.js";
-import { SearchBox } from "./search-box.js";
-import * as widgetAPI from "./widget-api.js";
+import { Spinner } from "./Spinner.tsx";
+import { SearchBox } from "./SearchBox.tsx";
+import * as widgetAPI from "./widget-api.ts";
 import * as frequent from "./frequently-used.js";
 
 // The base URL for fetching packs. The app will first fetch ${PACK_BASE_URL}/index.json,
@@ -309,87 +309,81 @@ class App extends Component {
       : [this.state.frequentlyUsed, ...this.state.packs];
 
     if (this.state.loading) {
-      return html`<main class="spinner ${theme}">
-        <${Spinner} size=${80} green />
-      </main>`;
+      return <main className="spinner ${theme}">
+        <Spinner size={80} green />
+      </main>;
     } else if (this.state.error) {
-      return html`<main class="error ${theme}">
+      return <main className={`error ${theme}`}>
         <h1>Failed to load packs</h1>
-        <p>${this.state.error}</p>
-      </main>`;
+        <p>{this.state.error}</p>
+      </main>;
     } else if (this.state.packs.length === 0) {
-      return html`<main class="empty ${theme}">
+      return <main className={`empty ${theme}`}>
         <h1>No packs found 😿</h1>
-      </main>`;
+      </main>;
     }
 
-    return html`<main class="has-content ${theme}">
-      <nav onWheel=${this.navScroll} ref=${(elem) => (this.navRef = elem)}>
-        <${NavBarItem}
-          pack=${this.state.frequentlyUsed}
-          iconOverride="recent"
-        />
-        ${this.state.packs.map(
-          (pack) => html`<${NavBarItem} id=${pack.id} pack=${pack} />`
-        )}
-        <${NavBarItem}
-          pack=${{ id: "settings", title: "Settings" }}
-          iconOverride="settings"
-        />
-      </nav>
-      <${SearchBox} onKeyUp=${this.searchStickers} />
-      <div
-        class="pack-list ${isMobileSafari ? "ios-safari-hack" : ""}"
-        ref=${(elem) => (this.packListRef = elem)}
-      >
-        ${filterActive && packs.length === 0
-          ? html`<div class="search-empty">
+    return (
+      <main className={`has-content ${theme}`}>
+        <nav onWheel={this.navScroll} ref={(elem) => (this.navRef = elem)}>
+          <NavBarItem
+            pack={this.state.frequentlyUsed}
+            iconOverride="recent"
+          />
+          {this.state.packs.map((pack) => (
+            <NavBarItem key={pack.id} id={pack.id} pack={pack} />
+          ))}
+          <NavBarItem
+            pack={{ id: "settings", title: "Settings" }}
+            iconOverride="settings"
+          />
+        </nav>
+        <SearchBox onKeyUp={this.searchStickers} />
+        <div
+          className={`pack-list ${isMobileSafari ? "ios-safari-hack" : ""}`}
+          ref={(elem) => (this.packListRef = elem)}
+        >
+          {filterActive && packs.length === 0 ? (
+            <div className="search-empty">
               <h1>No stickers match your search</h1>
-            </div>`
-          : null}
-        ${packs.map(
-          (pack) =>
-            html`<${Pack}
-              id=${pack.id}
-              pack=${pack}
-              send=${this.sendSticker}
-            />`
-        )}
-        <${Settings} app=${this} />
-      </div>
-    </main>`;
+            </div>
+          ) : null}
+          {packs.map((pack) => (
+            <Pack key={pack.id} id={pack.id} pack={pack} send={this.sendSticker} />
+          ))}
+          <Settings app={this} />
+        </div>
+      </main>
+    );
   }
 }
 
-const Settings = ({ app }) => html`
+const Settings = ({ app }) => (
   <section
-    class="stickerpack settings"
+    className="stickerpack settings"
     id="pack-settings"
     data-pack-id="settings"
   >
     <h1>Settings</h1>
-    <div class="settings-list">
-      <button onClick=${app.reloadPacks}>Reload</button>
+    <div className="settings-list">
+      <button onClick={app.reloadPacks}>Reload</button>
       <div>
-        <label for="stickers-per-row"
-          >Stickers per row: ${app.state.stickersPerRow}</label
-        >
+        <label htmlFor="stickers-per-row">Stickers per row: {app.state.stickersPerRow}</label>
         <input
           type="range"
           min="2"
           max="10"
           id="stickers-per-row"
-          id="stickers-per-row"
-          value=${app.state.stickersPerRow}
-          onInput=${(evt) => app.setStickersPerRow(evt.target.value)}
+          value={app.state.stickersPerRow}
+          onInput={(evt) => app.setStickersPerRow(evt.target.value)}
         />
       </div>
       <div>
-        <label for="theme">Theme: </label>
+        <label htmlFor="theme">Theme: </label>
         <select
           name="theme"
           id="theme"
-          onChange=${(evt) => app.setTheme(evt.target.value)}
+          onChange={(evt) => app.setTheme(evt.target.value)}
         >
           <option value="default">Default</option>
           <option value="light">Light</option>
@@ -399,7 +393,7 @@ const Settings = ({ app }) => html`
       </div>
     </div>
   </section>
-`;
+);
 
 // By default we just let the browser handle scrolling to sections, but webviews on Element iOS
 // open the link in the browser instead of just scrolling there, so we need to scroll manually:
@@ -409,51 +403,47 @@ const scrollToSection = (evt, id) => {
   evt.preventDefault();
 };
 
-const NavBarItem = ({ pack, iconOverride = null }) => html`
+const NavBarItem = ({ pack, iconOverride = null }) => (
   <a
-    href="#pack-${pack.id}"
-    id="nav-${pack.id}"
-    data-pack-id=${pack.id}
-    title=${pack.title}
-    onClick=${isMobileSafari
-      ? (evt) => scrollToSection(evt, pack.id)
-      : undefined}
+    href={`#pack-${pack.id}`}
+    id={`nav-${pack.id}`}
+    data-pack-id={pack.id}
+    title={pack.title}
+    onClick={isMobileSafari ? (evt) => scrollToSection(evt, pack.id) : undefined}
   >
-    <div class="sticker">
-      ${iconOverride
-        ? html` <span class="icon icon-${iconOverride}" /> `
-        : html`
-            <img
-              src=${makeThumbnailURL(pack.stickers[0].url)}
-              alt=${pack.stickers[0].body}
-              class="visible"
-            />
-          `}
-    </div>
-  </a>
-`;
-
-const Pack = ({ pack, send }) => html`
-  <section class="stickerpack" id="pack-${pack.id}" data-pack-id=${pack.id}>
-    <h1>${pack.title}</h1>
-    <div class="sticker-list">
-      ${pack.stickers.map(
-        (sticker) => html`
-          <${Sticker} key=${sticker.id} content=${sticker} send=${send} />
-        `
+    <div className="sticker">
+      {iconOverride ? (
+        <span className={`icon icon-${iconOverride}`} />
+      ) : (
+        <img
+          src={makeThumbnailURL(pack.stickers[0].url)}
+          alt={pack.stickers[0].body}
+          className="visible"
+        />
       )}
     </div>
-  </section>
-`;
+  </a>
+);
 
-const Sticker = ({ content, send }) => html`
-  <div class="sticker" onClick=${send} data-sticker-id=${content.id}>
+const Pack = ({ pack, send }) => (
+  <section className="stickerpack" id={`pack-${pack.id}`} data-pack-id={pack.id}>
+    <h1>{pack.title}</h1>
+    <div className="sticker-list">
+      {pack.stickers.map((sticker) => (
+        <Sticker key={sticker.id} content={sticker} send={send} />
+      ))}
+    </div>
+  </section>
+);
+
+const Sticker = ({ content, send }) => (
+  <div className="sticker" onClick={() => send(content.id)}>
     <img
-      data-src=${makeThumbnailURL(content.url)}
-      alt=${content.body}
-      title=${content.body}
+      src={makeThumbnailURL(content.url)}
+      alt={content.body}
+      title={content.body}
     />
   </div>
-`;
+);
 
-render(html`<${App} />`, document.body);
+render(<App />, document.body);

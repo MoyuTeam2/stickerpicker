@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no"
+    />
     <title>Maunium sticker picker</title>
 
+    <!--
     <link rel="modulepreload" href="src/widget-api.js"/>
     <link rel="modulepreload" href="src/frequently-used.js"/>
     <link rel="modulepreload" href="src/spinner.js"/>
-    <link rel="preload" href="packs/index.json" as="fetch" type="application/json" crossorigin/>
+    -->
 
-    <link rel="stylesheet" href="style/index.sass"/>
-    <link rel="stylesheet" href="style/spinner.sass"/>
-    <script src="src/index.js" type="module"></script>
-    <script nomodule>document.body.innerText = "This sticker picker requires modern JavaScript"</script>
-</head>
-<body>
+    <link
+      rel="preload"
+      href="packs/index.json"
+      as="fetch"
+      type="application/json"
+      crossorigin
+    />
+
+    <link rel="stylesheet" href="style/index.sass" />
+    <link rel="stylesheet" href="style/spinner.sass" />
+    <script src="src/index.jsx" type="module"></script>
+    <script nomodule>
+      document.body.innerText =
+        "This sticker picker requires modern JavaScript";
+    </script>
+  </head>
+  <body>
     <noscript>This sticker picker requires JavaScript</noscript>
-</body>
+  </body>
 </html>

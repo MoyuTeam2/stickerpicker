@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
+        "jsx": "react-jsx",
+        "jsxImportSource": "preact",
+        "lib": [
+            "dom",
+            "esnext"
+        ],
+        "module": "esnext",
+        "moduleResolution": "node",
+        "strict": true,
+        "target": "es6"
+    },
+    "include": [
+        "src"
+    ]
+}

@@ -16,24 +16,24 @@
   "scripts": {
     "clean": "rimraf dist/",
     "dev": "parcel serve index.html",
-    "build": "parcel build index.html --public-url ./ --dist-dir ./dist --no-source-maps"
+    "build": "pnpm run clean && parcel build index.html --public-url ./ --dist-dir ./dist --no-source-maps"
   },
   "staticFiles": {
     "staticPath": "packs/",
     "staticOutPath": "packs"
   },
   "dependencies": {
-    "esinstall": "^1.1.7",
-    "htm": "^3.1.0",
-    "preact": "^10.19.3",
-    "sass": "^1.42.1"
+    "preact": "^10.19.6"
   },
   "devDependencies": {
-    "@parcel/config-default": "^2.11.0",
-    "@parcel/transformer-sass": "2.11.0",
-    "parcel": "^2.11.0",
+    "@parcel/config-default": "^2.12.0",
+    "@parcel/transformer-sass": "^2.12.0",
+    "parcel": "^2.12.0",
     "parcel-reporter-static-files-copy": "^1.5.3",
     "rimraf": "^5.0.5",
-    "wrangler": "^3.28.3"
+    "svgo": "^2.8.0",
+    "typescript": "^5.3.3",
+    "wrangler": "^3.30.1",
+    "sass": "^1.71.1"
   }
 }
