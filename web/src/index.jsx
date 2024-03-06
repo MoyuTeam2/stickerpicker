@@ -15,6 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { render, Component } from "preact";
+
+import { LazyLoadImage } from "react-lazy-load-image-component";
+
 import { Spinner } from "./Spinner.tsx";
 import { SearchBox } from "./SearchBox.tsx";
 import * as widgetAPI from "./widget-api.ts";
@@ -436,14 +439,25 @@ const Pack = ({ pack, send }) => (
   </section>
 );
 
-const Sticker = ({ content, send }) => (
-  <div className="sticker" onClick={() => send(content.id)}>
-    <img
+const Sticker = ({ content, send }) => {
+  const src = makeThumbnailURL(content.url);
+  const emoji = content.body;
+  return (
+    <div className="sticker" onClick={() => send(content.id)}>
+      {/* <img
       src={makeThumbnailURL(content.url)}
       alt={content.body}
       title={content.body}
-    />
-  </div>
-);
+    /> */}
+      <LazyLoadImage
+        className="sticker-img"
+        src={src}
+        alt={emoji}
+        title={emoji}
+        effect="opacity"
+        threshold={1200}
+      />
+    </div>)
+}
 
 render(<App />, document.body);

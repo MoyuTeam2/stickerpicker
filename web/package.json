@@ -22,18 +22,27 @@
     "staticPath": "packs/",
     "staticOutPath": "packs"
   },
+  "alias": {
+    "react": "preact/compat",
+    "react-dom/test-utils": "preact/test-utils",
+    "react-dom": "preact/compat",
+    "react/jsx-runtime": "preact/jsx-runtime"
+  },
   "dependencies": {
-    "preact": "^10.19.6"
+    "preact": "^10.19.6",
+    "react-lazy-load-image-component": "^1.6.0"
   },
   "devDependencies": {
     "@parcel/config-default": "^2.12.0",
+    "@parcel/reporter-bundle-analyzer": "^2.12.0",
     "@parcel/transformer-sass": "^2.12.0",
+    "@types/react": "^18.2.61",
     "parcel": "^2.12.0",
     "parcel-reporter-static-files-copy": "^1.5.3",
     "rimraf": "^5.0.5",
+    "sass": "^1.71.1",
     "svgo": "^2.8.0",
     "typescript": "^5.3.3",
-    "wrangler": "^3.30.1",
-    "sass": "^1.71.1"
+    "wrangler": "^3.30.1"
   }
 }

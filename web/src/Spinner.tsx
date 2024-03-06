@@ -14,10 +14,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import React from 'preact/compat';
 
 export const Spinner = ({ size = 40, noCenter = false, noMargin = false, green = false }) => {
 	let margin = 0;
-	let sizePx = typeof size === 'number' ? size : parseInt(size, 10);
+	let sizePx: number | string = typeof size === 'number' ? size : parseInt(size, 10);
 
 	if (!isNaN(sizePx)) {
 		margin = noMargin ? 0 : Math.round(sizePx / 6);

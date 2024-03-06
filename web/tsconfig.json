@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
+        "baseUrl": "./",
         "experimentalDecorators": true,
         "esModuleInterop": true,
-        "jsx": "react-jsx",
-        "jsxImportSource": "preact",
+        "jsx": "react",
         "lib": [
             "dom",
             "esnext"
