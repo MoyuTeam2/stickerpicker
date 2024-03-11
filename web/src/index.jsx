@@ -292,8 +292,8 @@ class App extends Component {
     this.sectionObserver.disconnect();
   }
 
-  sendSticker(evt) {
-    const id = evt.currentTarget.getAttribute("data-sticker-id");
+  sendSticker(id) {
+    // const id = evt.currentTarget.getAttribute("data-sticker-id");
     const sticker = this.stickersByID.get(id);
     frequent.add(id);
     this.updateFrequentlyUsed();
