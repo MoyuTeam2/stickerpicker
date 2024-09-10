@@ -17,11 +17,16 @@
 import React from "preact/compat";
 
 
-export const SearchBox = ({ onKeyUp, placeholder = "Find stickers" }) => {
-  return (
-    <div className="search-box">
-      <input type="text" placeholder={placeholder} onKeyUp={onKeyUp} />
-      <span className="icon icon-search" />
-    </div>
-  );
+export const SearchBox = ({ onInput, onKeyUp, value, placeholder = "Find stickers" }: {
+	onInput: React.JSX.InputEventHandler<HTMLInputElement>,
+	onKeyUp: React.JSX.KeyboardEventHandler<HTMLInputElement>,
+	value: string,
+	placeholder?: string
+}) => {
+	return (
+		<div className="search-box">
+			<input type="text" placeholder={placeholder} value={value} onInput={onInput} onKeyUp={onKeyUp} />
+			<span className="icon icon-search" />
+		</div>
+	);
 };

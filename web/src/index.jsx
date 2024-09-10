@@ -312,7 +312,7 @@ class App extends Component {
       : [this.state.frequentlyUsed, ...this.state.packs];
 
     if (this.state.loading) {
-      return <main className="spinner ${theme}">
+      return <main className={`spinner ${theme}`}>
         <Spinner size={80} green />
       </main>;
     } else if (this.state.error) {
@@ -341,7 +341,7 @@ class App extends Component {
             iconOverride="settings"
           />
         </nav>
-        <SearchBox onKeyUp={this.searchStickers} />
+        <SearchBox onInput={this.searchStickers} value={this.state.filtering.searchTerm ?? ""} />
         <div
           className={`pack-list ${isMobileSafari ? "ios-safari-hack" : ""}`}
           ref={(elem) => (this.packListRef = elem)}

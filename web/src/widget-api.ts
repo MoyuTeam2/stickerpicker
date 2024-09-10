@@ -52,7 +52,7 @@ window.onmessage = (event) => {
   window.parent.postMessage({ ...request, response }, event.origin);
 };
 
-export function sendSticker(content) {
+export function sendSticker(content: any) {
   const data = {
     content: { ...content },
     // `name` is for Element Web (and also the spec)
