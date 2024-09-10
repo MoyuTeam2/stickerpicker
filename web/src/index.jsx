@@ -20,6 +20,8 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import { Spinner } from "./Spinner.tsx";
 import { SearchBox } from "./SearchBox.tsx";
+import { giphyIsEnabled, GiphySearchTab, setGiphyAPIKey } from "./giphy.jsx"
+
 import * as widgetAPI from "./widget-api.ts";
 import * as frequent from "./frequently-used.js";
 
@@ -36,9 +38,7 @@ if (params.has("config")) {
 let HOMESERVER_URL = "https://matrix-client.matrix.org";
 
 const makeThumbnailURL = (mxc) =>
-  `${HOMESERVER_URL}/_matrix/media/r0/thumbnail/${mxc.substr(
-    6
-  )}?height=128&width=128&method=scale`;
+  `${HOMESERVER_URL}/_matrix/media/v3/thumbnail/${mxc.slice(6)}?height=128&width=128&method=scale`;
 
 // We need to detect iOS webkit because it has a bug related to scrolling non-fixed divs
 // This is also used to fix scrolling to sections on Element iOS
@@ -189,6 +189,8 @@ class App extends Component {
         }
         const indexData = await indexRes.json();
         HOMESERVER_URL = indexData.homeserver_url || HOMESERVER_URL;
+        setGiphyAPIKey(indexData.giphy_api_key, indexData.giphy_mxc_prefix);
+
         // TODO only load pack metadata when scrolled into view?
         for (const packFile of indexData.packs) {
           let packRes;
@@ -253,6 +255,9 @@ class App extends Component {
     let maxXElem = null;
     for (const entry of intersections) {
       const packID = entry.target.getAttribute("data-pack-id");
+      if (!packID) {
+        continue;
+      }
       const navElement = document.getElementById(`nav-${packID}`);
       if (entry.isIntersecting) {
         navElement.classList.add("visible");
@@ -326,36 +331,58 @@ class App extends Component {
       </main>;
     }
 
+    const onClickOverride = this.state.viewingGifs
+      ? (evt, packID) => {
+        evt.preventDefault()
+        this.setState({ viewingGifs: false }, () => {
+          scrollToSection(null, packID)
+        })
+      } : null
+    const switchToGiphy = () => this.setState({ viewingGifs: true, filtering: defaultState.filtering })
+
     return (
       <main className={`has-content ${theme}`}>
         <nav onWheel={this.navScroll} ref={(elem) => (this.navRef = elem)}>
+          {
+            giphyIsEnabled() &&
+            <NavBarItem pack={{ id: "giphy", title: "GIPHY" }} iconOverride="giphy" onClickOverride={switchToGiphy} extraClass={this.state.viewingGifs ? "visible" : ""} />
+          }
           <NavBarItem
             pack={this.state.frequentlyUsed}
             iconOverride="recent"
+            onClickOverride={onClickOverride}
           />
           {this.state.packs.map((pack) => (
-            <NavBarItem key={pack.id} id={pack.id} pack={pack} />
+            <NavBarItem key={pack.id} id={pack.id} pack={pack}
+              onClickOverride={onClickOverride} />
           ))}
           <NavBarItem
             pack={{ id: "settings", title: "Settings" }}
             iconOverride="settings"
           />
         </nav>
-        <SearchBox onInput={this.searchStickers} value={this.state.filtering.searchTerm ?? ""} />
-        <div
-          className={`pack-list ${isMobileSafari ? "ios-safari-hack" : ""}`}
-          ref={(elem) => (this.packListRef = elem)}
-        >
-          {filterActive && packs.length === 0 ? (
-            <div className="search-empty">
-              <h1>No stickers match your search</h1>
+
+        {this.state.viewingGifs ?
+          <GiphySearchTab /> :
+          <>
+            <SearchBox onInput={this.searchStickers} value={this.state.filtering.searchTerm ?? ""} />
+            <div
+              className={`pack-list ${isMobileSafari ? "ios-safari-hack" : ""}`}
+              ref={(elem) => (this.packListRef = elem)}
+            >
+              {filterActive && packs.length === 0 ? (
+                <div className="search-empty">
+                  <h1>No stickers match your search</h1>
+                </div>
+              ) : null}
+              {packs.map((pack) => (
+                <Pack key={pack.id} id={pack.id} pack={pack} send={this.sendSticker} />
+              ))}
+              <Settings app={this} />
             </div>
-          ) : null}
-          {packs.map((pack) => (
-            <Pack key={pack.id} id={pack.id} pack={pack} send={this.sendSticker} />
-          ))}
-          <Settings app={this} />
-        </div>
+          </>
+        }
+
       </main>
     );
   }
@@ -402,17 +429,20 @@ const Settings = ({ app }) => (
 // open the link in the browser instead of just scrolling there, so we need to scroll manually:
 const scrollToSection = (evt, id) => {
   const pack = document.getElementById(`pack-${id}`);
-  pack.scrollIntoView({ block: "start", behavior: "instant" });
-  evt.preventDefault();
+  if (pack) {
+    pack.scrollIntoView({ block: "start", behavior: "instant" });
+  }
+  evt?.preventDefault();
 };
 
-const NavBarItem = ({ pack, iconOverride = null }) => (
+const NavBarItem = ({ pack, iconOverride = null, onClickOverride = null, extraClass = null }) => (
   <a
     href={`#pack-${pack.id}`}
     id={`nav-${pack.id}`}
     data-pack-id={pack.id}
     title={pack.title}
-    onClick={isMobileSafari ? (evt) => scrollToSection(evt, pack.id) : undefined}
+    className={`${extraClass}`}
+    onClick={onClickOverride ? (evt => onClickOverride(evt, pack.id)) : (isMobileSafari ? (evt) => scrollToSection(evt, pack.id) : undefined)}
   >
     <div className="sticker">
       {iconOverride ? (
