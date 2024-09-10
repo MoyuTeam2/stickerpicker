@@ -16,7 +16,7 @@
 import sys
 import json
 
-index_path = "../web/packs/index.json"
+index_path = "../web/public/packs/index.json"
 
 try:
     with util.open_utf8(index_path) as index_file:
@@ -44,7 +44,7 @@ for pack in data["assets"]:
         "stickers": stickers,
     }
     filename = f"scalar-{pack['name'].replace(' ', '_')}.json"
-    pack_path = f"web/packs/{filename}"
+    pack_path = f"web/public/packs/{filename}"
     with util.open_utf8(pack_path, "w") as pack_file:
         json.dump(pack_data, pack_file)
     print(f"Wrote {title} to {pack_path}")
